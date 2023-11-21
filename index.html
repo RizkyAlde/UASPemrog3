@@ -56,12 +56,21 @@
     var activeSheet = workbook.getActiveSheet();
 
     // Contoh: Menambahkan filter dinamis
-    activeSheet.applyFilterAsync("Field1", ["Value1"], tableau.FilterUpdateType.REPLACE);
+    activeSheet.applyFilterAsync("Category", ["Technology"], tableau.FilterUpdateType.REPLACE);
 
     // Contoh: Menambahkan parameter
-    var parameterName = "Parameter1";
-    var parameterValue = "Option1";
+    var parameterName = "Region";
+    var parameterValue = "East";
     workbook.changeParameterValueAsync(parameterName, parameterValue);
+
+    // Contoh: Mengubah warna latar belakang dashboard
+    var dashboard = viz.getWorkbook().getPublishedSheets()[0].getWorksheets()[0].getDashboard();
+    var backgroundColor = {
+      r: 255, // nilai merah (0-255)
+      g: 0,   // nilai hijau (0-255)
+      b: 0    // nilai biru (0-255)
+    };
+    dashboard.changeParameterValueAsync("BackgroundColor", backgroundColor);
   }
 
   // Menunggu hingga visualisasi siap
