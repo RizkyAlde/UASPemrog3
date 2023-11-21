@@ -3,8 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Dashboard by Rizky Alde</title>
+  <style>
+    /* Gaya CSS untuk elemen tanggal */
+    #tanggal {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 14px;
+      color: #333; /* Warna teks */
+    }
+  </style>
 </head>
 <body>
+
+<!-- Elemen Tanggal -->
+<div id="tanggal"></div>
 
 <div class="tableauPlaceholder" id="viz1699160449301" style="position: relative">
   <noscript>
@@ -71,6 +84,11 @@
       b: 0    // nilai biru (0-255)
     };
     dashboard.changeParameterValueAsync("BackgroundColor", backgroundColor);
+
+    // Tambahkan elemen tanggal
+    var currentDate = new Date();
+    var formattedDate = currentDate.toLocaleDateString();
+    document.getElementById("tanggal").innerText = formattedDate;
   }
 
   // Menunggu hingga visualisasi siap
