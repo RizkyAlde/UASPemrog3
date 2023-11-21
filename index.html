@@ -60,7 +60,6 @@
   });
 
   function getWeatherInfo(city) {
-    // Ganti API_KEY dengan kunci API OpenWeatherMap Anda
     var API_KEY = "53b6a594b8921bedecea261b6c922332";
     var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
 
@@ -84,11 +83,13 @@
       var cityName = data.name;
       var temperature = Math.round(data.main.temp - 273.15); // Konversi Kelvin ke Celsius
       var weatherDescription = data.weather[0].description;
+      var weatherIcon = data.weather[0].icon;
 
       var weatherInfoHTML = `
         <p><strong>Kota:</strong> ${cityName}</p>
         <p><strong>Suhu:</strong> ${temperature}°C</p>
         <p><strong>Deskripsi Cuaca:</strong> ${weatherDescription}</p>
+        <img src="http://openweathermap.org/img/w/${weatherIcon}.png" alt="Weather Icon">
       `;
 
       weatherInfoContainer.innerHTML = weatherInfoHTML;
