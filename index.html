@@ -2,99 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard by Rizky Alde</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informasi Cuaca</title>
   <style>
-    /* Gaya CSS untuk elemen tanggal */
-    #tanggal {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      font-size: 14px;
-      color: #333; /* Warna teks */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+
+    #weather-container {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #city-input {
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    #get-weather-btn {
+      padding: 8px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #weather-info {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-<!-- Elemen Tanggal -->
-<div id="tanggal"></div>
+<div id="weather-container">
+  <h2>Informasi Cuaca</h2>
+  <input type="text" id="city-input" placeholder="Masukkan nama kota">
+  <button id="get-weather-btn">Dapatkan Informasi Cuaca</button>
 
-<div class="tableauPlaceholder" id="viz1699160449301" style="position: relative">
-  <noscript>
-    <a href="#">
-      <img
-        alt="Overview (2)"
-        src="https://public.tableau.com/static/images/DA/DASHBOARDANALISASTATISTIKATERAPANPROJECT4/Overview2/1_rss.png"
-        style="border: none"
-      />
-    </a>
-  </noscript>
-  <object class="tableauViz" style="display: none">
-    <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
-    <param name="embed_code_version" value="3" />
-    <param name="site_root" value="" />
-    <param
-      name="name"
-      value="DASHBOARDANALISASTATISTIKATERAPANPROJECT4/Overview2"
-    />
-    <param name="tabs" value="no" />
-    <param name="toolbar" value="yes" />
-    <param
-      name="static_image"
-      value="https://public.tableau.com/static/images/DA/DASHBOARDANALISASTATISTIKATERAPANPROJECT4/Overview2/1.png"
-    />
-    <param name="animate_transition" value="yes" />
-    <param name="display_static_image" value="yes" />
-    <param name="display_spinner" value="yes" />
-    <param name="display_overlay" value="yes" />
-    <param name="display_count" value="yes" />
-    <param name="language" value="en-US" />
-    <param name="filter" value="publish=yes" />
-  </object>
+  <div id="weather-info"></div>
 </div>
 
-<script type="text/javascript">
-  var divElement = document.getElementById("viz1699160449301");
-  var vizElement = divElement.getElementsByTagName("object")[0];
-  vizElement.style.width = "1600px";
-  vizElement.style.height = "927px";
+<script>
+  document.getElementById("get-weather-btn").addEventListener("click", function () {
+    var cityInput = document.getElementById("city-input").value;
+    if (cityInput.trim() !== "") {
+      getWeatherInfo(cityInput);
+    } else {
+      alert("Masukkan nama kota terlebih dahulu.");
+    }
+  });
 
-  var scriptElement = document.createElement("script");
-  scriptElement.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
-  vizElement.parentNode.insertBefore(scriptElement, vizElement);
+  function getWeatherInfo(city) {
+    // Ganti API_KEY dengan kunci API OpenWeatherMap Anda
+    var API_KEY = "53b6a594b8921bedecea261b6c922332";
+    var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
 
-  // Tambahkan logika untuk mengatur filter atau parameter
-  function onFirstInteractive() {
-    var workbook = viz.getWorkbook();
-    var activeSheet = workbook.getActiveSheet();
-
-    // Contoh: Menambahkan filter dinamis
-    activeSheet.applyFilterAsync("Category", ["Technology"], tableau.FilterUpdateType.REPLACE);
-
-    // Contoh: Menambahkan parameter
-    var parameterName = "Region";
-    var parameterValue = "East";
-    workbook.changeParameterValueAsync(parameterName, parameterValue);
-
-    // Contoh: Mengubah warna latar belakang dashboard
-    var dashboard = viz.getWorkbook().getPublishedSheets()[0].getWorksheets()[0].getDashboard();
-    var backgroundColor = {
-      r: 255, // nilai merah (0-255)
-      g: 0,   // nilai hijau (0-255)
-      b: 0    // nilai biru (0-255)
-    };
-    dashboard.changeParameterValueAsync("BackgroundColor", backgroundColor);
-
-    // Tambahkan elemen tanggal
-    var currentDate = new Date();
-    var formattedDate = currentDate.toLocaleDateString();
-    document.getElementById("tanggal").innerText = formattedDate;
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        displayWeatherInfo(data);
+      })
+      .catch(error => {
+        console.error("Terjadi kesalahan:", error);
+        alert("Terjadi kesalahan saat mengambil informasi cuaca.");
+      });
   }
 
-  // Menunggu hingga visualisasi siap
-  scriptElement.onload = function () {
-    var viz = new tableau.Viz(vizElement, "DASHBOARD_URL", { hideTabs: true, onFirstInteractive: onFirstInteractive });
-  };
+  function displayWeatherInfo(data) {
+    var weatherInfoContainer = document.getElementById("weather-info");
+
+    if (data.cod === "404") {
+      weatherInfoContainer.innerHTML = "<p>Kota tidak ditemukan. Silakan coba lagi.</p>";
+    } else {
+      var cityName = data.name;
+      var temperature = Math.round(data.main.temp - 273.15); // Konversi Kelvin ke Celsius
+      var weatherDescription = data.weather[0].description;
+
+      var weatherInfoHTML = `
+        <p><strong>Kota:</strong> ${cityName}</p>
+        <p><strong>Suhu:</strong> ${temperature}°C</p>
+        <p><strong>Deskripsi Cuaca:</strong> ${weatherDescription}</p>
+      `;
+
+      weatherInfoContainer.innerHTML = weatherInfoHTML;
+    }
+  }
 </script>
 
 </body>
