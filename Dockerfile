@@ -13,8 +13,11 @@ RUN npm install
 # Salin seluruh konten proyek ke dalam direktori kerja di dalam container
 COPY . .
 
+# Install http-server
+RUN npm install -g http-server
+
 # Port yang akan diexpose oleh container
-EXPOSE 3000
+EXPOSE 8080
 
 # Perintah untuk menjalankan aplikasi ketika container dijalankan
-CMD ["node", "app.js"]
+CMD ["http-server", "-p", "8080"]
